@@ -39,12 +39,24 @@ namespace addressbook_tests_white
             CloseGroupsDialogue(dialogue);
             return list;
         }
-        public GroupHelper Remove(int index)
+
+        public void RemoveLastOne()
         {
             Window dialogue = OpenGroupsDialogue();
             Tree tree = dialogue.Get<Tree>("uxAddressTreeView");
             TreeNode root = tree.Nodes[0];
             root.Nodes[0].Click();
+            dialogue.Get<Button>("uxDeleteAddressButton").Click();
+            dialogue.Get(SearchCriteria.ByClassName("WindowsForms10.BUTTON.app.0.2c908d5")).Click();
+            CloseGroupsDialogue(dialogue);
+        }
+
+        public GroupHelper Remove(int index)
+        {
+            Window dialogue = OpenGroupsDialogue();
+            Tree tree = dialogue.Get<Tree>("uxAddressTreeView");
+            TreeNode root = tree.Nodes[0];
+            root.Nodes[index].Click();
             dialogue.Get<Button>("uxDeleteAddressButton").Click();
             dialogue.Get<Button>("uxOKAddressButton").Click();
             CloseGroupsDialogue(dialogue);
@@ -60,6 +72,25 @@ namespace addressbook_tests_white
             Keyboard.Instance.PressSpecialKey(KeyboardInput.SpecialKeys.RETURN);
             CloseGroupsDialogue(dialogue);
             return this;
+        }
+
+        public void ChangeGroupsListToOneGroup(List<GroupData> oldGroups)
+        {
+            if (oldGroups.Count == 0)
+            {
+                GroupData defaultGroup = new GroupData()
+                {
+                    Name = "testGroupNameWhiteIfEmpty"
+                };
+                Add(defaultGroup);
+            }
+            else if (oldGroups.Count >= 2)
+            {
+                for (int i = 1; i < oldGroups.Count; i++)
+                {
+                    Remove(0);
+                }
+            }
         }
 
         private void CloseGroupsDialogue(Window dialogue)

@@ -12,7 +12,19 @@ namespace addressbook_tests_white
         [Test]
         public void GroupRemovingTest()
         {
+
+            GroupData defaultGroup = new GroupData()
+            {
+                Name = "testGroupNameWhiteIfEmpty"
+            };
+
             List<GroupData> oldGroups = app.Groups.GetGroupList();
+            if (oldGroups.Count <= 1)
+            {
+                app.Groups.Add(defaultGroup);
+                oldGroups.Add(defaultGroup);
+            }
+
             GroupData removingGroup = oldGroups[0];
             app.Groups.Remove(0);
             
@@ -22,5 +34,17 @@ namespace addressbook_tests_white
             newGroups.Sort();
             Assert.AreEqual(oldGroups, newGroups);
         }
+
+        [Test]
+        public void RemovingLastGroupTest()
+        {
+
+            List<GroupData> oldGroups = app.Groups.GetGroupList();
+            app.Groups.ChangeGroupsListToOneGroup(oldGroups);
+            app.Groups.RemoveLastOne();
+            List<GroupData> newGroups = app.Groups.GetGroupList();
+            Assert.AreEqual(oldGroups, newGroups);
+        }
+        
     }
 }
